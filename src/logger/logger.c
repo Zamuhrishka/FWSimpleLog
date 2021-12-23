@@ -14,38 +14,19 @@
 
 #if !defined(NDEBUG)
 //_____ C O N F I G S  ________________________________________________________
-#define LOG_BUFFER_SIZE			256u											///< Size of debug queue
+///Size of debug queue
+#define LOG_BUFFER_SIZE			256u											
 //_____ D E F I N I T I O N S _________________________________________________
-// #if defined(DBG_COLOR_SUPPORT)
-// static const char* colors[] =
-// {
-// 	"",
-// 	"\033[33m",
-// 	"\033[31m",
-// 	"\033[91m\033[1m"
-// };
-// #endif
-
-// static char level_names[] = 
-// {
-//   '0', 
-//   '1', 
-//   '2', 
-//   '3'
-// };
 //_____ M A C R O S ___________________________________________________________
 //_____ V A R I A B L E S _____________________________________________________
 static struct 
 {
-  	debug_levels_e 	level; 															///< 0 (TRACE) to 5 (FATAL)
-	bool 			quiet; 															///< if console logging is silent/quiet
-#if defined(LOG_TS_SUPPORT_ENABLE)
-	bool			ts;
-#endif
-	output_fun_t  	output_fn; 														///< I/O for console logging
+  	severity_t 		severity; 														///<
+	bool 			silence; 														///<
+	output_fun_t  	output_fn; 														///<
 	char 			string[LOG_BUFFER_SIZE];
-	log_msg_t		message;
-} 	log_context;
+	log_t			message;
+} 	logger_ctx;
 
 char tx_message[LOG_BUFFER_SIZE];
 //_____ P R I V A T E  F U N C T I O N S_______________________________________
@@ -55,17 +36,13 @@ char tx_message[LOG_BUFFER_SIZE];
 *
 * Public function defined in debug.h
 */
-bool log_init(void)
+bool logger_init(void)
 {
-	log_context.quiet = false;
-	log_context.level = DBG_INFO;
-	log_context.output_fn = NULL;
+	logger_ctx.silence = false;
+	logger_ctx.severity = INFO;
+	logger_ctx.output_fn = NULL;
 
-#if defined(LOG_TS_SUPPORT_ENABLE)
-	log_context.ts = true;
-#endif
-
-	memset(log_context.string, '\0', LOG_BUFFER_SIZE);
+	memset(logger_ctx.string, '\0', LOG_BUFFER_SIZE);
 
 	return true;
 }
@@ -75,9 +52,9 @@ bool log_init(void)
 *
 * Public function defined in debug.h
 */
-void log_on(void)
+void logger_on(void)
 {
-	log_context.quiet = false;
+	logger_ctx.silence = false;
 }
 
 /**
@@ -85,9 +62,9 @@ void log_on(void)
 *
 * Public function defined in debug.h
 */
-void log_off(void)
+void logger_off(void)
 {
-	log_context.quiet = true;
+	logger_ctx.silence = true;
 }
 
 /**
@@ -95,9 +72,9 @@ void log_off(void)
 *
 * Public function defined in debug.h
 */
-void log_set_level(debug_levels_e level)
+void logger_set_severity(severity_t severity)
 {
-	log_context.level = level;
+	logger_ctx.severity = severity;
 }
 
 /**
@@ -105,9 +82,9 @@ void log_set_level(debug_levels_e level)
 *
 * Public function defined in debug.h
 */
-debug_levels_e log_get_level(void)
+severity_t logger_get_severity(void)
 {
-	return log_context.level;
+	return logger_ctx.severity;
 }
 
 /**
@@ -115,10 +92,10 @@ debug_levels_e log_get_level(void)
 *
 * Public function defined in debug.h
 */
-void log_output_register(output_fun_t out)
+void logger_output_register(output_fun_t out)
 {
 	assert(out);
-	log_context.output_fn = out;
+	logger_ctx.output_fn = out;
 }
 
 /**
@@ -130,33 +107,33 @@ void log(debug_levels_e level, debug_module_e module, const char* fmt, ...)
 {
 	va_list arp;
 
-	if(!log_context.quiet)
+	if(!logger_ctx.quiet)
 	{
-		if (log_context.level <= level) 
+		if (logger_ctx.level <= level) 
 		{
 #if defined(LOG_TS_SUPPORT_ENABLE)
-			if(log_context.ts) 
+			if(logger_ctx.ts) 
 			{
-				log_context.message.timestamp = debug_get_timestamp();
+				logger_ctx.message.timestamp = debug_get_timestamp();
 			}
 #endif
-			log_context.message.level = level;
-			log_context.message.module = module;
+			logger_ctx.message.level = level;
+			logger_ctx.message.module = module;
 
 			va_start(arp, fmt);
-			vsnprintf(log_context.string, LOG_BUFFER_SIZE, fmt, arp);
+			vsnprintf(logger_ctx.string, LOG_BUFFER_SIZE, fmt, arp);
 			va_end(arp);
 
-			log_context.message.msg = &log_context.string[0];
+			logger_ctx.message.msg = &logger_ctx.string[0];
 
-			log_stransmit_to_host(&log_context.message);
+			logger_stransmit_to_host(&logger_ctx.message);
 		}
 	}
 }
 
 
 
-void log_stransmit_to_host(const log_msg_t* msg)
+void logger_stransmit_to_host(const log_msg_t* msg)
 {
 	memset(tx_message, 0, sizeof(tx_message));
 	// tx_message[0] = '<';
@@ -169,10 +146,10 @@ void log_stransmit_to_host(const log_msg_t* msg)
 	size_t len = strlen(tx_message);
 	// tx_message[len] = '>';
 
-	log_context.output_fn(tx_message, strlen(tx_message));
+	logger_ctx.output_fn(tx_message, strlen(tx_message));
 }
 
-void log_save_to_flash(const log_msg_t* msg)
+void logger_save_to_flash(const log_msg_t* msg)
 {
 	va_list arp;
 	size_t len = 0;
@@ -180,7 +157,7 @@ void log_save_to_flash(const log_msg_t* msg)
 
 	memset(tx_message, 0, sizeof(tx_message));
 #if defined(LOG_TS_SUPPORT_ENABLE)
-	if(log_context.ts) 
+	if(logger_ctx.ts) 
 	{
 		char ts[10] = {0};
 

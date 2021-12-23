@@ -79,7 +79,7 @@ static inline uint8_t count_num(uint32_t dig, uint8_t f_n_bit)
 *
 * Public function defined in convert.h
 */
-void convert_uint32_to_string(char *str, uint32_t dig)
+void logger_num_to_string(char *str, uint32_t dig)
 {
 	uint8_t num = 0;
 

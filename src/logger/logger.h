@@ -14,10 +14,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <time.h>
 //_____ C O N F I G S  ________________________________________________________
-// #define LOG_TS_SUPPORT_ENABLE		1
-
 #define 	LOG_MSG_SEPARATOR			','
 //_____ D E F I N I T I O N S _________________________________________________
 /**
@@ -25,66 +22,63 @@
  */
 typedef enum
 {
-	DBG_INFO 		= 		'0',												///< Allow all debug message
-	DBG_WARNING 	= 		'1',												///< Allow warning + error + critical message
-	DBG_ERROR 		= 		'2',												///< Allow error + critical message
-	DBG_CRITICAL 	= 		'3'													///< Allow only critical message
-}	debug_levels_e;
+	INFO 		= 		'0',												///< Allow all debug message
+	WARNING 	= 		'1',												///< Allow warning + error + critical message
+	ERROR 		= 		'2',												///< Allow error + critical message
+	FATAL 		= 		'3'													///< Allow only critical message
+}	severity_t;
 
 typedef enum
 {
-	DBG_MODULE_0	= 		'0',
-	DBG_MODULE_1	= 		'1',
-	DBG_MODULE_2	= 		'2',
-	DBG_MODULE_3	= 		'3',
-	DBG_MODULE_4	= 		'4',
-	DBG_MODULE_5	= 		'5',
-	DBG_MODULE_6	= 		'6',
-	DBG_MODULE_7	= 		'7',
-	DBG_MODULE_8	= 		'8',
-	DBG_MODULE_9	= 		'9',
-	DBG_MODULE_10	= 		'A',
-	DBG_MODULE_11	= 		'B',
-	DBG_MODULE_12	= 		'C',
-	DBG_MODULE_13	= 		'D',
-	DBG_MODULE_14	= 		'E',
-	DBG_MODULE_15	= 		'F',
-	DBG_MODULE_16	= 		'G',
-	DBG_MODULE_17	= 		'H',
-	DBG_MODULE_18	= 		'I',
-	DBG_MODULE_19	= 		'J',
-	DBG_MODULE_20	= 		'K',
-	DBG_MODULE_21	= 		'L',
-	DBG_MODULE_22	= 		'M',
-	DBG_MODULE_23	= 		'N',
-	DBG_MODULE_24	= 		'O',
-	DBG_MODULE_25	= 		'P',
-	DBG_MODULE_26	= 		'Q',
-	DBG_MODULE_27	= 		'R',
-	DBG_MODULE_28	= 		'S',
-	DBG_MODULE_29	= 		'T',
-	DBG_MODULE_30	= 		'U',
-	DBG_MODULE_31	= 		'V',
-	DBG_MODULE_32	= 		'W',
-	DBG_MODULE_33	= 		'X',
-	DBG_MODULE_34	= 		'Y',
-	DBG_MODULE_35	= 		'Z',
-}	debug_module_e;
+	LOG_MODULE_0	= 		'0',
+	LOG_MODULE_1	= 		'1',
+	LOG_MODULE_2	= 		'2',
+	LOG_MODULE_3	= 		'3',
+	LOG_MODULE_4	= 		'4',
+	LOG_MODULE_5	= 		'5',
+	LOG_MODULE_6	= 		'6',
+	LOG_MODULE_7	= 		'7',
+	LOG_MODULE_8	= 		'8',
+	LOG_MODULE_9	= 		'9',
+	LOG_MODULE_10	= 		'A',
+	LOG_MODULE_11	= 		'B',
+	LOG_MODULE_12	= 		'C',
+	LOG_MODULE_13	= 		'D',
+	LOG_MODULE_14	= 		'E',
+	LOG_MODULE_15	= 		'F',
+	LOG_MODULE_16	= 		'G',
+	LOG_MODULE_17	= 		'H',
+	LOG_MODULE_18	= 		'I',
+	LOG_MODULE_19	= 		'J',
+	LOG_MODULE_20	= 		'K',
+	LOG_MODULE_21	= 		'L',
+	LOG_MODULE_22	= 		'M',
+	LOG_MODULE_23	= 		'N',
+	LOG_MODULE_24	= 		'O',
+	LOG_MODULE_25	= 		'P',
+	LOG_MODULE_26	= 		'Q',
+	LOG_MODULE_27	= 		'R',
+	LOG_MODULE_28	= 		'S',
+	LOG_MODULE_29	= 		'T',
+	LOG_MODULE_30	= 		'U',
+	LOG_MODULE_31	= 		'V',
+	LOG_MODULE_32	= 		'W',
+	LOG_MODULE_33	= 		'X',
+	LOG_MODULE_34	= 		'Y',
+	LOG_MODULE_35	= 		'Z',
+}	logmod_t;
 
 typedef bool (*output_fun_t)(const unsigned char * c, size_t size);
 
 /**
  * \brief   Example of struct typedef definition
  */
-typedef struct _tstruct
+typedef struct tagLog_t
 {
-#if defined(LOG_TS_SUPPORT_ENABLE)
-    time_t 			timestamp;         											///< example32 elemet
-#endif
-    debug_levels_e 	level;         												///< example16 elemet
-    char 			module;           											///< example8 elemet
-	char*			msg;														///< example8 elemet
-}   log_msg_t;
+    severity_t 		level;         												///< 
+    logmod_t		module;           											///<
+	char*			msg;														///<
+}   log_t;
 //_____ M A C R O S ___________________________________________________________
 //_____ V A R I A B L E S _____________________________________________________
 //_____ P U B L I C  F U N C T I O N S_________________________________________
@@ -95,7 +89,7 @@ typedef struct _tstruct
 *
 * \return 	true/false.
 */
-bool log_init(void);
+bool logger_init(void);
 
 /*!
 * \brief 	Switch on debug.
@@ -104,7 +98,7 @@ bool log_init(void);
 *
 * \return 	none.
 */
-void log_on(void);
+void logger_on(void);
 
 /*!
 * \brief 	Switch off debug.
@@ -113,7 +107,7 @@ void log_on(void);
 *
 * \return 	none.
 */
-void log_off(void);
+void logger_off(void);
 
 /*!
 * \brief 	Setup debug level.
@@ -126,7 +120,7 @@ void log_off(void);
 *
 * \return 	none.
 */
-void log_set_level(debug_levels_e level);
+void logger_set_severity(severity_t severity);
 
 /*!
 * \brief 	Return debug level.
@@ -135,7 +129,7 @@ void log_set_level(debug_levels_e level);
 *
 * \return 	active level of debug.
 */
-debug_levels_e log_get_level(void);
+severity_t logger_get_severity(void);
 
 /*!
 * \brief 	Register special function for print debug message.
@@ -154,13 +148,9 @@ void log_output_register(output_fun_t out);
 *
 * \return 	none.
 */
-void log(debug_levels_e level, debug_module_e module, const char* fmt, ...);
+void log(severity_t severity, logmod_t module, const char* fmt, ...);
 
-
-//#define 	LOG_INFO()
-//#define 	LOG_WARN()
-//#define 	LOG_ERROR()
-//#define 	LOG_FATAL() 
+void logr(const char* fmt, ...);
 
 /* C++ detection */
 #ifdef __cplusplus

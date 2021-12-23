@@ -26,7 +26,7 @@
  *
  * \return 		void.
 **/
-void convert_uint32_to_string(char *str, uint32_t dig);
+void logger_num_to_string(char *str, uint32_t dig);
 
 /* C++ detection */
 #ifdef __cplusplus
