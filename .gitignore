@@ -1,0 +1,58 @@
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+*o.d
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+#*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+*.xml
+
+# Debug files
+*.dSYM/
+
+# Folders
+/.vscode/
+/build/
+/docs/
+/linker/
+/options/
+/tools/
+/test/
+/vendor/
+/src/Core/
+/src/Drivers/
+
+# Framework files
+.clang-format
+ceedling.cmd
+Doxygen.conf
+project.yml
+pvs-studio.bat
+PVS-Studio.cfg
+rakefile.rb
+
+# Temporary files
+*.tmp
