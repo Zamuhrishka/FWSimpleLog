@@ -23,12 +23,14 @@ static struct
 {
   	severity_t 		severity; 														///<
 	bool 			silence; 														///<
-	output_fun_t  	output_fn; 														///<
+	Logger_Mode_e 	mode;
+
+	logger_output_fpt output;
+	
 	char 			string[LOG_BUFFER_SIZE];
-	log_t			message;
+	logMessage_t*			log;
 } 	logger_ctx;
 
-char tx_message[LOG_BUFFER_SIZE];
 //_____ P R I V A T E  F U N C T I O N S_______________________________________
 //_____ P U B L I C  F U N C T I O N S_________________________________________
 /**
@@ -38,34 +40,50 @@ char tx_message[LOG_BUFFER_SIZE];
 */
 bool logger_init(void)
 {
-	logger_ctx.silence = false;
+	logger_ctx.mode = LOGGER__FULL_MODE;
 	logger_ctx.severity = INFO;
-	logger_ctx.output_fn = NULL;
+	logger_ctx.output = NULL;
+
+	logger_ctx.log = LogMessage_Create();
+	if(NULL == logger_ctx.log) {
+		return false;
+	}
 
 	memset(logger_ctx.string, '\0', LOG_BUFFER_SIZE);
 
 	return true;
 }
 
-/**
-* This function switch debug on.
-*
-* Public function defined in debug.h
-*/
-void logger_on(void)
+
+void logger_set_mode(Logger_Mode_e mode)
 {
-	logger_ctx.silence = false;
+	logger_ctx.mode = mode;
 }
 
-/**
-* This function switch debug off.
-*
-* Public function defined in debug.h
-*/
-void logger_off(void)
+Logger_Mode_e logger_get_mode(void)
 {
-	logger_ctx.silence = true;
+	return logger_ctx.mode;
 }
+
+// /**
+// * This function switch debug on.
+// *
+// * Public function defined in debug.h
+// */
+// void logger_on(void)
+// {
+// 	logger_ctx.silence = false;
+// }
+
+// /**
+// * This function switch debug off.
+// *
+// * Public function defined in debug.h
+// */
+// void logger_off(void)
+// {
+// 	logger_ctx.silence = true;
+// }
 
 /**
 * This function setup debug level.
@@ -92,10 +110,16 @@ severity_t logger_get_severity(void)
 *
 * Public function defined in debug.h
 */
-void logger_output_register(output_fun_t out)
+// void logger_output_register(output_fun_t out)
+// {
+// 	assert(out);
+// 	logger_ctx.output_fn = out;
+// }
+
+void logger_output_register(logger_output_fpt out)
 {
 	assert(out);
-	logger_ctx.output_fn = out;
+	logger_ctx.output = out;
 }
 
 /**
@@ -103,13 +127,13 @@ void logger_output_register(output_fun_t out)
 *
 * Public function defined in debug.h
 */
-void log(debug_levels_e level, debug_module_e module, const char* fmt, ...)
+void log(severity_t severity, logmod_t module, const char* fmt, ...)
 {
 	va_list arp;
 
-	if(!logger_ctx.quiet)
+	if(!logger_ctx.mode != LOGGER__SILENCE_MODE)
 	{
-		if (logger_ctx.level <= level) 
+		if (logger_ctx.severity <= severity) 
 		{
 #if defined(LOG_TS_SUPPORT_ENABLE)
 			if(logger_ctx.ts) 
@@ -117,56 +141,33 @@ void log(debug_levels_e level, debug_module_e module, const char* fmt, ...)
 				logger_ctx.message.timestamp = debug_get_timestamp();
 			}
 #endif
-			logger_ctx.message.level = level;
-			logger_ctx.message.module = module;
+			// logger_ctx.message.severity = severity;
+			// logger_ctx.message.module = module;
+
+
+			LogMessage_SetSeverity(logger_ctx.message, sevetiry);
+			LogMessage_SetModule(logger_ctx.message, module);
+
+			//FIXME: Possible stack overflow situation
+			assert(strlen(fmt) < LOG_BUFFER_SIZE);
+
+			// va_start(arp, fmt);
+			// vsnprintf(logger_ctx.string, LOG_BUFFER_SIZE, fmt, arp);
+			// va_end(arp);
+
 
 			va_start(arp, fmt);
-			vsnprintf(logger_ctx.string, LOG_BUFFER_SIZE, fmt, arp);
+			vsnprintf(LogMessage_GetMessage(), LOG_BUFFER_SIZE, fmt, arp);
 			va_end(arp);
 
 			logger_ctx.message.msg = &logger_ctx.string[0];
 
-			logger_stransmit_to_host(&logger_ctx.message);
+			if (NULL != logger_ctx.output)
+			{
+				logger_ctx.output(&logger_ctx.message);
+			}
 		}
 	}
-}
-
-
-
-void logger_stransmit_to_host(const log_msg_t* msg)
-{
-	memset(tx_message, 0, sizeof(tx_message));
-	// tx_message[0] = '<';
-	tx_message[0] = msg->level;
-	tx_message[1] = LOG_MSG_SEPARATOR;
-	tx_message[2] = msg->module;
-	tx_message[3] = LOG_MSG_SEPARATOR;
-	strcpy(&tx_message[4], msg->msg);
-
-	size_t len = strlen(tx_message);
-	// tx_message[len] = '>';
-
-	logger_ctx.output_fn(tx_message, strlen(tx_message));
-}
-
-void logger_save_to_flash(const log_msg_t* msg)
-{
-	va_list arp;
-	size_t len = 0;
-	char* ptr = NULL;
-
-	memset(tx_message, 0, sizeof(tx_message));
-#if defined(LOG_TS_SUPPORT_ENABLE)
-	if(logger_ctx.ts) 
-	{
-		char ts[10] = {0};
-
-		convert_uint32_to_string(ts, msg->timestamp);
-		ptr = strcat(tx_message, ts);
-		len = strlen(tx_message);
-		tx_message[len] = LOG_MSG_SEPARATOR;
-	}
-#endif
 }
 
 #else
