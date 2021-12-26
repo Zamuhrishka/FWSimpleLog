@@ -13,6 +13,7 @@
 //_____ I N C L U D E S _______________________________________________________
 #include <stdbool.h>
 #include <stdint.h>
+#include "stdlib.h"
 
 #include "dlog.h"
 //_____ C O N F I G S  ________________________________________________________
@@ -20,7 +21,7 @@
 //_____ M A C R O S ___________________________________________________________
 //_____ V A R I A B L E S _____________________________________________________
 //_____ P U B L I C  F U N C T I O N S_________________________________________
-bool dlog_serialization(const dlog_t* message, char* text);
+bool dlog_serialization(const dlog_t* message, char* text, size_t len);
 
 /* C++ detection */
 #ifdef __cplusplus
