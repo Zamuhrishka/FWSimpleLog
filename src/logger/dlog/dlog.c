@@ -18,8 +18,8 @@
 struct tagDebugLog_t
 {
     severity_t 		severity;         												
-    char		    module[DLOG_MODULE_NAME_MAX_LEN];           											
-	char			body[DLOG_BODY_LEN];														
+    char		    module[DLOG_MODULE_MAX_LEN];           											
+	char			body[DLOG_BODY_MAX_LEN];														
 };
 //_____ M A C R O S ___________________________________________________________
 //_____ V A R I A B L E S _____________________________________________________
@@ -57,7 +57,7 @@ void LogMessage_SetModuleName(dlog_t* message, const char * module_name)
     assert(message);
 
     size_t len = strlen(module_name);
-    len = (len < DLOG_MODULE_NAME_MAX_LEN) ? len : DLOG_MODULE_NAME_MAX_LEN;
+    len = (len < DLOG_MODULE_MAX_LEN) ? len : DLOG_MODULE_MAX_LEN;
 
     strncpy(message->module, module_name, len);
 }
@@ -74,7 +74,7 @@ void LogMessage_SetBody(dlog_t* message, const char *  body)
     assert(message);
 
     size_t len = strlen(body);
-    len = (len < DLOG_BODY_LEN) ? len : DLOG_BODY_LEN;
+    len = (len < DLOG_BODY_MAX_LEN) ? len : DLOG_BODY_MAX_LEN;
 
     strncpy(message->body, body, len);
 }

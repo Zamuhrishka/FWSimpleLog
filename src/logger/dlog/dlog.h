@@ -14,8 +14,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 //_____ C O N F I G S  ________________________________________________________
-#define DLOG_BODY_LEN						256
-#define DLOG_MODULE_NAME_MAX_LEN            32  
+#define DLOG_BODY_MAX_LEN					256
+#define DLOG_MODULE_MAX_LEN            		32  
 //_____ D E F I N I T I O N S _________________________________________________
 struct tagDebugLog_t;
 typedef struct tagDebugLog_t dlog_t;
