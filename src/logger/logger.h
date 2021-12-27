@@ -16,6 +16,7 @@
 #include <stdlib.h>
 
 #include "dlog.h"
+#include "logger_output_interface.h"
 //_____ C O N F I G S  ________________________________________________________
 //_____ D E F I N I T I O N S _________________________________________________
 typedef enum {
