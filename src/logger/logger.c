@@ -18,12 +18,10 @@
 //_____ V A R I A B L E S _____________________________________________________
 static struct 
 {
-  	severity_t 		severity; 													
-	bool 			silence; 													
-	Logger_Mode_e 	mode;
-	logger_output_fpt output;	
-	char 			string[LOG_BUFFER_SIZE];
-	dlog_t*			log;
+  	severity_t 			severity; 													
+	Logger_Mode_e 		mode;
+	logger_output_fpt 	output;	
+	dlog_t*				log;
 } 	logger_ctx;
 
 //_____ P R I V A T E  F U N C T I O N S_______________________________________
