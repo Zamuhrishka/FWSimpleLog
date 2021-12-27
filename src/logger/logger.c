@@ -95,32 +95,20 @@ void logger_output_register(logger_output_fpt out)
 */
 void log(severity_t severity, const char* module, const char* fmt, ...)
 {
-	va_list arp;
-
-	if(!logger_ctx.mode != LOGGER__SILENCE_MODE)
+	//TODO: Add semophor support
+	if(logger_ctx.mode != LOGGER__SILENCE_MODE)
 	{
 		if (logger_ctx.severity <= severity) 
 		{
-#if defined(LOG_TS_SUPPORT_ENABLE)
-			if(logger_ctx.ts) 
-			{
-				logger_ctx.message.timestamp = debug_get_timestamp();
-			}
-#endif
 			LogMessage_SetSeverity(logger_ctx.log, severity);
 			LogMessage_SetModule(logger_ctx.log, module);
 
-			//FIXME: Possible stack overflow situation
-			assert(strlen(fmt) < LOG_BUFFER_SIZE);
-
+			va_list arp;
 			va_start(arp, fmt);
-			vsnprintf(LogMessage_GetMessage(), LOG_BUFFER_SIZE, fmt, arp);
+			vsnprintf(LogMessage_GetMessage(), DLOG_BODY_MAX_LEN, fmt, arp);
 			va_end(arp);
 
-			logger_ctx.message.msg = &logger_ctx.string[0];
-
-			if (NULL != logger_ctx.output)
-			{
+			if (NULL != logger_ctx.output) {
 				logger_ctx.output(&logger_ctx.message);
 			}
 		}
