@@ -50,8 +50,9 @@ static char* DlogSer_AddSeverity(char * message, severity_t severity)
     }
 
     *message = severity;
+    size_t len = strlen(message);
 
-    return &message[sizeof(severity)];
+    return &message[len];
 }
 
 /**

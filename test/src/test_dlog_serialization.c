@@ -21,10 +21,11 @@ void tearDown(void)
 
 void test_serialization(void)
 {
-    char exp_text = "1,GPS,Warning messages from module 2";
-    char text[200] = "--------------------------------------------------------------------------------------------------------------------------------------------------------";
+    char exp_text[] = "1,GPS,Warning messages from module 2\n";
+    char text[200] = "";
 
-    bool res = dlog_serialization(dlog, text);
+    bool res = dlog_serialization(dlog, text, sizeof(text));
     TEST_ASSERT_TRUE(res);
+    // printf("%s", text);
     TEST_ASSERT_EQUAL_STRING(exp_text, text);
 }
