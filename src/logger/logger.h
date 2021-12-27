@@ -35,7 +35,7 @@ typedef bool (*logger_output_fpt)(const dlog_t* msg);
 *
 * \return 	true/false.
 */
-bool logger_init(void);
+bool logger_init(Logger_Mode_e mode, severity_t severity);
 
 /*!
 * \brief 	Switch on debug.

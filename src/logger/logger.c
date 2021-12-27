@@ -34,16 +34,16 @@ static struct
 *
 * Public function defined in debug.h
 */
-bool logger_init(void)
+bool logger_init(Logger_Mode_e mode, severity_t severity)
 {
-	logger_ctx.mode = LOGGER__FULL_MODE;
-	logger_ctx.severity = SEVERITY_INFO;
-	logger_ctx.output = NULL;
-
 	logger_ctx.log = LogMessage_Create();
 	if(NULL == logger_ctx.log) {
 		return false;
 	}
+
+	logger_ctx.mode = mode;
+	logger_ctx.severity = severity;
+	logger_ctx.output = NULL;
 
 	memset(logger_ctx.string, '\0', LOG_BUFFER_SIZE);
 
