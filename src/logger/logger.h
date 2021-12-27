@@ -24,7 +24,6 @@ typedef enum {
 	LOGGER__FULL_MODE
 } Logger_Mode_e;
 
-typedef bool (*logger_output_fpt)(const dlog_t* msg);
 //_____ M A C R O S ___________________________________________________________
 //_____ V A R I A B L E S _____________________________________________________
 //_____ P U B L I C  F U N C T I O N S_________________________________________
