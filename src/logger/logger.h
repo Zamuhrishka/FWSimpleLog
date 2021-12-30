@@ -88,7 +88,7 @@ severity_t logger_get_severity(void);
 *
 * \return 	none.
 */
-// void log_output_register(output_fun_t out);
+void logger_output_register(logger_output_fpt out);
 
 /*!
 * \brief 	Print debug message into console.
