@@ -42,7 +42,7 @@ bool logger_init(Logger_Mode_e mode, severity_t severity)
 	logger_ctx.severity = severity;
 	logger_ctx.output = NULL;
 
-	memset(logger_ctx.string, '\0', LOG_BUFFER_SIZE);
+	logger_output_init();
 
 	return true;
 }
