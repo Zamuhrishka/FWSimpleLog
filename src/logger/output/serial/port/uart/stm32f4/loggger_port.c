@@ -47,6 +47,9 @@
 //_____ M A C R O S ___________________________________________________________
 //_____ V A R I A B L E   D E F I N I T I O N  ________________________________
 static void* uart_ctx = NULL;
+
+extern UART_HandleTypeDef huart2;
+extern DMA_HandleTypeDef hdma_usart2_tx;
 //_____ I N L I N E   F U N C T I O N   D E F I N I T I O N   _________________
 //_____ S T A T I C  F U N C T I O N   D E F I N I T I O N   __________________
 //_____ F U N C T I O N   D E F I N I T I O N   _______________________________
@@ -70,7 +73,8 @@ bool logger_port_init(void* ctx)
 */
 bool logger_port_output(const unsigned char * c, size_t size)
 {
-	HAL_UART_Transmit(uart_ctx, c, size, 500);
+	// HAL_UART_Transmit(uart_ctx, c, size, 500);
+	HAL_UART_Transmit(&huart2, c, size, 1000);
 
 	return true;
 }
