@@ -21,6 +21,8 @@
 //_____ M A C R O S ___________________________________________________________
 //_____ V A R I A B L E S _____________________________________________________
 //_____ P U B L I C  F U N C T I O N S_________________________________________
+void logger_output_init(void);
+
 void logger_serial_print(const dlog_t* msg);
 
 /* C++ detection */

@@ -17,21 +17,21 @@
 //_____ D E F I N I T I O N S _________________________________________________
 //_____ M A C R O S ___________________________________________________________
 //_____ V A R I A B L E S _____________________________________________________
-static 	serial_output_cb  output = NULL;
-static char text[200] = "";
+static char text[DLOG_BODY_MAX_LEN] = "";
 //_____ P R I V A T E  F U N C T I O N S_______________________________________
 //_____ P U B L I C  F U N C T I O N S_________________________________________
-void logger_output_function_reg(serial_output_cb out)
+void logger_output_init(void)
 {
-    assert(out);
-	output = out;
+	logger_port_init();
 }
 
 void logger_serial_print(const dlog_t* msg)
 {
 	assert(msg);
 
-	if(dlog_serialization(msg, text, sizeof(text))) {
-		output(text, strlen(text));
+	if(dlog_serialization(msg, text, sizeof(text))) 
+	{
+		logger_port_output(text, strlen(text));
+		memset(text, '\0', sizeof(text));
 	}
 }
