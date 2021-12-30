@@ -26,6 +26,10 @@ typedef enum {
 } Logger_Mode_e;
 
 //_____ M A C R O S ___________________________________________________________
+#define LOG_INFO(module, fmt, ...)      log(DBG_INFO, module, fmt, __VA_ARGS__)
+#define LOG_WARN(module, fmt, ...)      log(DBG_WARNING, module, fmt, __VA_ARGS__)
+#define LOG_ERROR(module, fmt, ...)     log(DBG_ERROR, module, fmt, __VA_ARGS__)
+#define LOG_FATAL(module, fmt, ...)     log(DBG_CRITICAL, module, fmt, __VA_ARGS__)
 //_____ V A R I A B L E S _____________________________________________________
 //_____ P U B L I C  F U N C T I O N S_________________________________________
 /*!
