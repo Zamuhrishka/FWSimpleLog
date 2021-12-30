@@ -85,3 +85,12 @@ const char * LogMessage_GetBody(const dlog_t* message)
 
     return message->body;
 }
+
+void LogMessage_Clear(dlog_t* message)
+{
+    assert(message);
+
+    message->severity = SEVERITY_INFO;
+    memset(message->body, '\0', sizeof(message->body));
+    memset(message->module, '\0', sizeof(message->module));
+}

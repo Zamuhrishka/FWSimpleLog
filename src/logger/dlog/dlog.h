@@ -46,6 +46,8 @@ const char * LogMessage_GetModuleName(const dlog_t* message);
 void LogMessage_SetBody(dlog_t* message, const char *  body);
 const char * LogMessage_GetBody(const dlog_t* message);
 
+void LogMessage_Clear(dlog_t* message);
+
 /* C++ detection */
 #ifdef __cplusplus
 }
