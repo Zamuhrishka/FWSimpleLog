@@ -98,7 +98,7 @@ severity_t logger_get_severity(void);
 *
 * \return 	none.
 */
-void log(severity_t severity, logmod_t module, const char* fmt, ...);
+void log(severity_t severity, const char* module, const char* fmt, ...);
 
 void logr(const char* fmt, ...);
 
